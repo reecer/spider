@@ -105,6 +105,12 @@ opts.files.forEach(function (fileName, fileIndex) {
         _require.resolve = function(request) {
           return Module._resolveFilename(request, _module);
         };
+        // Traceur all js files?
+        _require.extensions['.js'] = function(module, fname){
+          var content = require('fs').readFileSync(fname, 'utf8');
+          var src = traceur.compile(content, {modules: 'commonjs'});
+          module._compile(src, fname);
+        };
         _require.extensions['.spider'] = function(module, fname){
           var content = require('fs').readFileSync(fname, 'utf8');
           var src = spider.compile({
